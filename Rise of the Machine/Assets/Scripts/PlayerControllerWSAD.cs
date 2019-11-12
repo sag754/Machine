@@ -6,7 +6,8 @@ public class PlayerControllerWSAD : MonoBehaviour
 {
     Rigidbody rb; //declare a reference for the rigidbody
 
-    public float force = 100f; //create a force to push the playerObject
+    public GameObject camera;
+    public float force = 100.0f; //create a force to push the playerObject
     bool isSmall = false;
 
     // Start is called before the first frame update
@@ -22,25 +23,41 @@ public class PlayerControllerWSAD : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         { //if the W is pressed
-            rb.AddForce(new Vector3(0, 0, force)); //add force up
+            //rb.AddForce(new Vector3(0, 0, force)); //add force up
+            Vector3 cameraforward = camera.transform.forward;
+            cameraforward.y = 0;
+            cameraforward = Vector3.Normalize(cameraforward);
+            rb.AddForce(cameraforward * force);
             hasInput = true; //the user has pressed a key
         }
 
         if (Input.GetKey(KeyCode.S))
         { //if the S is pressed
-            rb.AddForce(new Vector3(0, 0, -force)); //add force down
+            //rb.AddForce(new Vector3(0, 0, -force)); //add force down
+            Vector3 cameraforward = camera.transform.forward;
+            cameraforward.y = 0;
+            cameraforward = Vector3.Normalize(cameraforward);
+            rb.AddForce(cameraforward * -force);
             hasInput = true; //the user has pressed a key
         }
 
         if (Input.GetKey(KeyCode.A))
         { //if the A is pressed
-            rb.AddForce(new Vector3(-force, 0, 0)); //add force left
+            //rb.AddForce(new Vector3(-force, 0, 0)); //add force left
+            Vector3 cameraright = camera.transform.right;
+            cameraright.y = 0;
+            cameraright = Vector3.Normalize(cameraright);
+            rb.AddForce(cameraright * -force);
             hasInput = true; //the user has pressed a key
         }
 
         if (Input.GetKey(KeyCode.D))
         {//if the D is pressed
-            rb.AddForce(new Vector3(force, 0, 0)); //add force right
+         //rb.AddForce(new Vector3(force, 0, 0)); //add force right
+            Vector3 cameraright = camera.transform.right;
+            cameraright.y = 0;
+            cameraright = Vector3.Normalize(cameraright);
+            rb.AddForce(cameraright * force);
             hasInput = true; //the user has pressed a key
         }
 
@@ -64,7 +81,7 @@ public class PlayerControllerWSAD : MonoBehaviour
 
         if (!Input.anyKey)
         { //if the user hasn't pressed a key
-            rb.velocity = rb.velocity * 1f; //decrease velocity
+            rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
 
     }
