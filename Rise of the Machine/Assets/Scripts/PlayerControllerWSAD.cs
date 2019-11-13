@@ -8,8 +8,8 @@ public class PlayerControllerWSAD : MonoBehaviour
 
     public GameObject camera;
     public float force = 100.0f; //create a force to push the playerObject
+    public float jump = 10000f;
     bool isSmall = false;
-    public float jump = 2f;
 
     // Start is called before the first frame update
     void Start()
@@ -32,12 +32,6 @@ public class PlayerControllerWSAD : MonoBehaviour
             hasInput = true; //the user has pressed a key
         }
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            rb.AddForce(new Vector3(0, jump, 0)); //add jump
-            hasInput = true; //the user has pressed a key
-        }
-        
         if (Input.GetKey(KeyCode.S))
         { //if the S is pressed
             //rb.AddForce(new Vector3(0, 0, -force)); //add force down
@@ -67,7 +61,13 @@ public class PlayerControllerWSAD : MonoBehaviour
             rb.AddForce(cameraright * force);
             hasInput = true; //the user has pressed a key
         }
-    
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.AddForce(new Vector3(0, force, 0));
+            hasInput = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
         {
             if (isSmall == false) // checks if isSmall is false
@@ -91,6 +91,5 @@ public class PlayerControllerWSAD : MonoBehaviour
             rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
 
-       
-}
+    }
 }

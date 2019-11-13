@@ -12,8 +12,8 @@ public class ThirdPersonCamera : MonoBehaviour  // create Third Person Camera Cl
     private float distance = 10.0f;            //sets the distance away from the lookAt object
     private float currentX = 0.0f;             //sets the current X position of the camera
     private float currentY = 5.0f;             //sets the current Y position of the camera
-    private float sensitivityX = 1f;         //sets how quickly the camera rotates on the X-axis
-    private float sensitivityY = 1f;         //sets how quickly the camera rotates on the Y-axis
+    private float sensitivityX = 8f;         //sets how quickly the camera rotates on the X-axis
+    private float sensitivityY = 5f;         //sets how quickly the camera rotates on the Y-axis
 
     private void Start()
     {
@@ -23,8 +23,8 @@ public class ThirdPersonCamera : MonoBehaviour  // create Third Person Camera Cl
 
     private void Update()
     {
-        currentX += Input.GetAxis("Mouse X");     //sets camera control on the X-axis to the Mouse X
-        currentY -= Input.GetAxis("Mouse Y");     //sets camera control on the Y-axis to the Mouse Y
+        currentX += Input.GetAxis("Mouse X") * sensitivityX;     //sets camera control on the X-axis to the Mouse X and sensitivity
+        currentY -= Input.GetAxis("Mouse Y") * sensitivityY;     //sets camera control on the Y-axis to the Mouse Y and sensitivity
     }
 
     private void LateUpdate()
