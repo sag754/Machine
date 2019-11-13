@@ -91,5 +91,15 @@ public class PlayerControllerWSAD : MonoBehaviour
             rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
 
+        RaycastHit hit;
+        Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1f);
+
+        if(hit.collider != null)
+        {
+            if (hit.collider.gameObject.CompareTag("Conveyor"))
+            {
+                rb.AddForce(hit.collider.gameObject.transform.forward);
+            }
+        }
     }
 }
