@@ -12,11 +12,7 @@ public class ResetObjPosition : MonoBehaviour
     void Start()
     {
   
-    Invoke(nameof(p),spawnTime);
-    // create a holder to call the delay on: DelayCube no mesh 
-    // apply inkove to delayCube?
-    // onTriggerEnter call the DelayCube?
-
+    Invoke(nameof(p),spawnTime); // introduces function to allow to call for debug
     }
 
     // Update is called once per frame
@@ -46,6 +42,6 @@ public class ResetObjPosition : MonoBehaviour
     }
 
     void p(){
-        print("function is running");
+        print("function is running"); // print to console to verify when Invoke is running
     }
 }

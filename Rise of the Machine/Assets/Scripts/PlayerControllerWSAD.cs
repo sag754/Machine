@@ -8,7 +8,7 @@ public class PlayerControllerWSAD : MonoBehaviour
 
     public GameObject camera;
     public float force = 100.0f; //create a force to push the playerObject
-    public float jump = 10000f;
+    public float jump = 100.0f; //create a jump to be called via key press
     bool isSmall = false;
 
     // Start is called before the first frame update
@@ -62,10 +62,16 @@ public class PlayerControllerWSAD : MonoBehaviour
             hasInput = true; //the user has pressed a key
         }
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space)) // base jump code off up control
         {
-            rb.AddForce(new Vector3(0, force, 0));
-            hasInput = true;
+                
+                Vector3 cameraforward = camera.transform.forward;
+            cameraforward.y = 0;
+            cameraforward = Vector3.Normalize(cameraforward);
+            rb.AddForce(cameraforward * force);
+            hasInput = true; //the user has pressed a key
+                        //rb.AddForce(new Vector3(0, force, 0));
+                //hasInput = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
@@ -81,7 +87,7 @@ public class PlayerControllerWSAD : MonoBehaviour
         {
             if (isSmall == true) //checks if isSmall is true
             {
-                transform.localScale += new Vector3(2, 2, 2); //if truem make the ball bigger
+                transform.localScale += new Vector3(2, 2, 2); //if true make the ball bigger
             }
             isSmall = false; //changes isSmall to false
         }
