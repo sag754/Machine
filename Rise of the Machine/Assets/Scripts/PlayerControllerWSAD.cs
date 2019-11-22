@@ -14,10 +14,10 @@ public class PlayerControllerWSAD : MonoBehaviour
     public Vector3 large_ball;
     public Vector3 small_ball;
     public bool scale = false;
-    public bool stasisGet = true;
-    private float stasisCoolDown;
+    public bool stasisGet = false;
+    public float stasisCoolDown;
     private float initialSlowDownTime;
-    private float stasis_time_remain;
+    public float stasis_time_remain;
     public float initialSlowDownDuration = .5f;
     public float coolDownDuration = 10;
     public float stasisDuration = 5;
@@ -83,24 +83,11 @@ public class PlayerControllerWSAD : MonoBehaviour
             hasInput = true; //the user has pressed a key
         }
 
-        if (isGrounded)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                rb.AddForce(Vector3.up * jumpHeight);
-            }
-        }
-
-         if (!Input.anyKey)
-        { //if the user hasn't pressed a key
-            rb.velocity = rb.velocity * 1.0f; //decrease velocity
-        }
-
         RaycastHit hit;
         Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
         //Physics.SphereCast(gameObject.transform.position, .6f, Vector3.down, out hit);
 
-        if(hit.collider != null)
+        if (hit.collider != null)
         {
             isGrounded = true;
             if (hit.collider.gameObject.CompareTag("Conveyor"))
@@ -112,16 +99,31 @@ public class PlayerControllerWSAD : MonoBehaviour
         {
             isGrounded = false;
         }
+
+        if (isGrounded)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                rb.AddForce(Vector3.up * jumpHeight);
+            }
+        }
+
+         if (!Input.anyKey)
+        { //if the user hasn't pressed a key
+            rb.velocity = rb.velocity * 1.0f; //decrease velocity
+        }
+
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-     
+
 
         if (scale == true)
         {
-            if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
+            if (Input.GetKeyDown(KeyCode.Mouse0)) //if > is pressed
             {
                 if (isSmall == false) // checks if isSmall is false
                 {
@@ -130,7 +132,7 @@ public class PlayerControllerWSAD : MonoBehaviour
                 isSmall = true; //changes isSmall to true
             }
 
-            if (Input.GetKeyDown(KeyCode.Comma)) // if < is pressed
+            if (Input.GetKeyDown(KeyCode.Mouse1)) // if < is pressed
             {
                 if (isSmall == true) //checks if isSmall is true
                 {
@@ -140,15 +142,19 @@ public class PlayerControllerWSAD : MonoBehaviour
             }
         }
 
-        //activates stasis ability
-        if (stasisGet && Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0 )
-        {
-            stasisCoolDown = stasisDuration;
-            initialSlowDownTime = initialSlowDownDuration;
-        }
 
-        //stasis power
-        if(initialSlowDownTime > 0)
+
+        if(stasisGet == true)
+        //activates stasis ability
+        //if (stasisGet == true && Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0)
+        if (Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0)
+        {
+                stasisCoolDown = coolDownDuration;
+                initialSlowDownTime = initialSlowDownDuration;
+            }
+
+            //stasis power
+        if (initialSlowDownTime > 0)
         {
             initialSlowDownTime = Mathf.Max(0, initialSlowDownTime - Time.unscaledDeltaTime);
             gameTimeScale = initialSlowDownTime / initialSlowDownDuration;
@@ -160,20 +166,21 @@ public class PlayerControllerWSAD : MonoBehaviour
         }
 
         //the duration of how long the stasis lasts
-        if(stasis_time_remain > 0)
+        if (stasis_time_remain > 0)
         {
             stasis_time_remain = Mathf.Max(0, stasis_time_remain - Time.unscaledDeltaTime);
 
-            if(stasis_time_remain <= 0)
+            if (stasis_time_remain <= 0)
             {
                 gameTimeScale = 1;
             }
         }
 
         //the duration of how long the cool down lasts
-        if(stasisCoolDown > 0)
+        if (stasisCoolDown > 0)
         {
             stasisCoolDown = Mathf.Max(0, stasisCoolDown - Time.unscaledDeltaTime);
         }
     }
+    
 }
