@@ -7,10 +7,22 @@ public class PlayerControllerWSAD : MonoBehaviour
     Rigidbody rb; //declare a reference for the rigidbody
 
     public GameObject cam;
-    public float force = 100.0f; //create a force to push the playerObject
+    public float force = 200.0f; //create a force to push the playerObject
     public float jumpHeight = 50f;
     bool isSmall = false;
     public bool isGrounded;
+    public Vector3 large_ball;
+    public Vector3 small_ball;
+    public bool scale = false;
+    public bool stasisGet = true;
+    private float stasisCoolDown;
+    private float initialSlowDownTime;
+    private float stasis_time_remain;
+    public float initialSlowDownDuration = .5f;
+    public float coolDownDuration = 10;
+    public float stasisDuration = 5;
+    public static float gameTimeScale = 1;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,8 +43,7 @@ public class PlayerControllerWSAD : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         bool hasInput = false; //create a local variable to track whether the user has inputed something
 
@@ -72,33 +83,15 @@ public class PlayerControllerWSAD : MonoBehaviour
             hasInput = true; //the user has pressed a key
         }
 
-        if(isGrounded)
+        if (isGrounded)
         {
-           if(Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 rb.AddForce(Vector3.up * jumpHeight);
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
-        {
-            if (isSmall == false) // checks if isSmall is false
-            {
-                transform.localScale -= new Vector3(2, 2, 2); //if false, make the ball smaller
-            }
-            isSmall = true; //changes isSmall to true
-        }
-
-        if (Input.GetKeyDown(KeyCode.Comma)) // if < is pressed
-        {
-            if (isSmall == true) //checks if isSmall is true
-            {
-                transform.localScale += new Vector3(2, 2, 2); //if truem make the ball bigger
-            }
-            isSmall = false; //changes isSmall to false
-        }
-
-        if (!Input.anyKey)
+         if (!Input.anyKey)
         { //if the user hasn't pressed a key
             rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
@@ -118,6 +111,69 @@ public class PlayerControllerWSAD : MonoBehaviour
         else
         {
             isGrounded = false;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+     
+
+        if (scale == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
+            {
+                if (isSmall == false) // checks if isSmall is false
+                {
+                    transform.localScale = small_ball; //if false, make the ball smaller
+                }
+                isSmall = true; //changes isSmall to true
+            }
+
+            if (Input.GetKeyDown(KeyCode.Comma)) // if < is pressed
+            {
+                if (isSmall == true) //checks if isSmall is true
+                {
+                    transform.localScale = large_ball; //if true make the ball bigger
+                }
+                isSmall = false; //changes isSmall to false
+            }
+        }
+
+        //activates stasis ability
+        if (stasisGet && Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0 )
+        {
+            stasisCoolDown = stasisDuration;
+            initialSlowDownTime = initialSlowDownDuration;
+        }
+
+        //stasis power
+        if(initialSlowDownTime > 0)
+        {
+            initialSlowDownTime = Mathf.Max(0, initialSlowDownTime - Time.unscaledDeltaTime);
+            gameTimeScale = initialSlowDownTime / initialSlowDownDuration;
+
+            if (initialSlowDownTime <= 0)
+            {
+                stasis_time_remain = stasisDuration;
+            }
+        }
+
+        //the duration of how long the stasis lasts
+        if(stasis_time_remain > 0)
+        {
+            stasis_time_remain = Mathf.Max(0, stasis_time_remain - Time.unscaledDeltaTime);
+
+            if(stasis_time_remain <= 0)
+            {
+                gameTimeScale = 1;
+            }
+        }
+
+        //the duration of how long the cool down lasts
+        if(stasisCoolDown > 0)
+        {
+            stasisCoolDown = Mathf.Max(0, stasisCoolDown - Time.unscaledDeltaTime);
         }
     }
 }
