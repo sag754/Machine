@@ -15,6 +15,8 @@ public class PlayerControllerWSAD : MonoBehaviour
     public Vector3 small_ball;
     public bool scale = false;
     public bool stasisGet = false;
+    public bool sticky = false;
+    public bool stuck = false;
     public float stasisCoolDown;
     private float initialSlowDownTime;
     public float stasis_time_remain;
@@ -23,6 +25,8 @@ public class PlayerControllerWSAD : MonoBehaviour
     public float stasisDuration = 5;
     public static float gameTimeScale = 1;
 
+    public GameObject sticker;
+    private Vector3 collisionPoint;
 
     // Start is called before the first frame update
     void Start()
@@ -34,9 +38,22 @@ public class PlayerControllerWSAD : MonoBehaviour
     {
         if (other.collider != null)
         {
-            isGrounded = true;
+            if (stuck == true)
+            {
+                RaycastHit hit;
+                Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
+                if (hit.collider == null)
+                {
+                    gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                    sticker.transform.SetParent(other.collider.transform);
+                    collisionPoint = other.GetContact(0).point;
+                    isGrounded = true;
+                } else
+                {
+                    stuck = false;
+                }
+            }
         }
-
         else
         {
             isGrounded = false;
@@ -86,25 +103,41 @@ public class PlayerControllerWSAD : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
         //Physics.SphereCast(gameObject.transform.position, .6f, Vector3.down, out hit);
-
-        if (hit.collider != null)
+        if (stuck == false)
         {
-            isGrounded = true;
-            if (hit.collider.gameObject.CompareTag("Conveyor"))
+            if (hit.collider != null)
             {
-                rb.AddForce(hit.collider.gameObject.transform.forward);
+                isGrounded = true;
+                if (hit.collider.gameObject.CompareTag("Conveyor"))
+                {
+                    rb.AddForce(hit.collider.gameObject.transform.forward);
+                }
             }
-        }
-        else
-        {
-            isGrounded = false;
+            else
+            {
+                isGrounded = false;
+            }
         }
 
         if (isGrounded)
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                rb.AddForce(Vector3.up * jumpHeight);
+                if (stuck == false)
+                {
+                    rb.AddForce(Vector3.up * jumpHeight);
+                } else
+                {
+                    stuck = false;
+                    isGrounded = false;
+                    gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                    sticker.transform.SetParent(null);
+                    Vector3 awayFromContact = (Vector3.Normalize(gameObject.transform.position - collisionPoint)/6f) + Vector3.up;
+                    if (collisionPoint != Vector3.zero)
+                    {
+                        rb.AddForce(awayFromContact * jumpHeight);
+                    }
+                }
             }
         }
 
@@ -113,7 +146,6 @@ public class PlayerControllerWSAD : MonoBehaviour
             rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
 
-       
     }
 
     // Update is called once per frame
@@ -139,6 +171,26 @@ public class PlayerControllerWSAD : MonoBehaviour
                     transform.localScale = large_ball; //if true make the ball bigger
                 }
                 isSmall = false; //changes isSmall to false
+            }
+        }
+
+        if(sticky == true)
+        {
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                RaycastHit hit;
+                Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
+                if (!hit.collider)
+                {
+                    stuck = true;
+                }
+            }
+
+            else
+            {
+                stuck = false;
+                gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                sticker.transform.SetParent(null);
             }
         }
 

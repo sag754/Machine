@@ -29,7 +29,7 @@ public class PlatformScript : MonoBehaviour
         Vector3 direction;
         float distanceToTravel;
 
-        Debug.Log("Current State: " + currentState);
+        //Debug.Log("Current State: " + currentState);
 
         switch (currentState)
         {
