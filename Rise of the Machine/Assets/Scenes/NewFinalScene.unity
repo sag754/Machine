@@ -888,8 +888,8 @@ MonoBehaviour:
   force: 20
   jumpHeight: 300
   isGrounded: 0
-  large_ball: {x: 2, y: 2, z: 2}
-  small_ball: {x: 1, y: 1, z: 1}
+  large_ball: {x: 1, y: 1, z: 1}
+  small_ball: {x: 2, y: 2, z: 2}
   scale: 0
   stasisGet: 0
   sticky: 0

@@ -176,7 +176,7 @@ public class PlayerControllerWSAD : MonoBehaviour
 
         if(sticky == true)
         {
-            if(Input.GetKey(KeyCode.LeftShift))
+            if(Input.GetKey(KeyCode.Mouse1))
             {
                 RaycastHit hit;
                 Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
