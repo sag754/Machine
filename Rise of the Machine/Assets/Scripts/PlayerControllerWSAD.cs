@@ -7,22 +7,10 @@ public class PlayerControllerWSAD : MonoBehaviour
     Rigidbody rb; //declare a reference for the rigidbody
 
     public GameObject cam;
-    public float force = 200.0f; //create a force to push the playerObject
+    public float force = 100.0f; //create a force to push the playerObject
     public float jumpHeight = 50f;
     bool isSmall = false;
     public bool isGrounded;
-    public Vector3 large_ball;
-    public Vector3 small_ball;
-    public bool scale = false;
-    public bool stasisGet = false;
-    public float stasisCoolDown;
-    private float initialSlowDownTime;
-    public float stasis_time_remain;
-    public float initialSlowDownDuration = .5f;
-    public float coolDownDuration = 10;
-    public float stasisDuration = 5;
-    public static float gameTimeScale = 1;
-
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +31,8 @@ public class PlayerControllerWSAD : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    // Update is called once per frame
+    void Update()
     {
         bool hasInput = false; //create a local variable to track whether the user has inputed something
 
@@ -83,11 +72,42 @@ public class PlayerControllerWSAD : MonoBehaviour
             hasInput = true; //the user has pressed a key
         }
 
+        if(isGrounded)
+        {
+           if(Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(Vector3.up * jumpHeight);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Period)) //if > is pressed
+        {
+            if (isSmall == false) // checks if isSmall is false
+            {
+                transform.localScale -= new Vector3(2, 2, 2); //if false, make the ball smaller
+            }
+            isSmall = true; //changes isSmall to true
+        }
+
+        if (Input.GetKeyDown(KeyCode.Comma)) // if < is pressed
+        {
+            if (isSmall == true) //checks if isSmall is true
+            {
+                transform.localScale += new Vector3(2, 2, 2); //if truem make the ball bigger
+            }
+            isSmall = false; //changes isSmall to false
+        }
+
+        if (!Input.anyKey)
+        { //if the user hasn't pressed a key
+            rb.velocity = rb.velocity * 1.0f; //decrease velocity
+        }
+
         RaycastHit hit;
         Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1.5f);
         //Physics.SphereCast(gameObject.transform.position, .6f, Vector3.down, out hit);
 
-        if (hit.collider != null)
+        if(hit.collider != null)
         {
             isGrounded = true;
             if (hit.collider.gameObject.CompareTag("Conveyor"))
@@ -99,88 +119,5 @@ public class PlayerControllerWSAD : MonoBehaviour
         {
             isGrounded = false;
         }
-
-        if (isGrounded)
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                rb.AddForce(Vector3.up * jumpHeight);
-            }
-        }
-
-         if (!Input.anyKey)
-        { //if the user hasn't pressed a key
-            rb.velocity = rb.velocity * 1.0f; //decrease velocity
-        }
-
-       
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
-        if (scale == true)
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0)) //if > is pressed
-            {
-                if (isSmall == false) // checks if isSmall is false
-                {
-                    transform.localScale = small_ball; //if false, make the ball smaller
-                }
-                isSmall = true; //changes isSmall to true
-            }
-
-            if (Input.GetKeyDown(KeyCode.Mouse1)) // if < is pressed
-            {
-                if (isSmall == true) //checks if isSmall is true
-                {
-                    transform.localScale = large_ball; //if true make the ball bigger
-                }
-                isSmall = false; //changes isSmall to false
-            }
-        }
-
-
-
-        if(stasisGet == true)
-        //activates stasis ability
-        //if (stasisGet == true && Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0)
-        if (Input.GetKeyDown(KeyCode.E) && stasis_time_remain <= 0 && stasisCoolDown <= 0)
-        {
-                stasisCoolDown = coolDownDuration;
-                initialSlowDownTime = initialSlowDownDuration;
-            }
-
-            //stasis power
-        if (initialSlowDownTime > 0)
-        {
-            initialSlowDownTime = Mathf.Max(0, initialSlowDownTime - Time.unscaledDeltaTime);
-            gameTimeScale = initialSlowDownTime / initialSlowDownDuration;
-
-            if (initialSlowDownTime <= 0)
-            {
-                stasis_time_remain = stasisDuration;
-            }
-        }
-
-        //the duration of how long the stasis lasts
-        if (stasis_time_remain > 0)
-        {
-            stasis_time_remain = Mathf.Max(0, stasis_time_remain - Time.unscaledDeltaTime);
-
-            if (stasis_time_remain <= 0)
-            {
-                gameTimeScale = 1;
-            }
-        }
-
-        //the duration of how long the cool down lasts
-        if (stasisCoolDown > 0)
-        {
-            stasisCoolDown = Mathf.Max(0, stasisCoolDown - Time.unscaledDeltaTime);
-        }
-    }
-    
 }
