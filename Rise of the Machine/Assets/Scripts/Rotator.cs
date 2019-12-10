@@ -5,7 +5,7 @@ using UnityEngine;
 public class Rotator : MonoBehaviour
 {
 
-    public float y_speed = 1000.0f;  //applies default speed and makes public for adjusting in editor/inspector
+    public float y_speed = 2.0f;  //applies default speed and makes public for adjusting in editor/inspector
 
     // Start is called before the first frame update
     void Start()
