@@ -24,6 +24,7 @@ public class PlayerControllerWSAD : MonoBehaviour
     public float coolDownDuration = 10;
     public float stasisDuration = 5;
     public static float gameTimeScale = 1;
+   
 
     public GameObject sticker;
     private Vector3 collisionPoint;
