@@ -6,11 +6,18 @@ using UnityEngine.SceneManagement;
 public class EndingScript : MonoBehaviour
 {
 
+    private float LevelLoadDelay = 5;
+
     private void Update()
     {
         if (Input.anyKey)                  //if the player hits the spacebar
         {
-            SceneManager.LoadScene(0);                    //go to the instructions screen
+            Invoke("LoadNextLevel", LevelLoadDelay);                    //go to the instructions screen
         }
+    }
+
+    private void LoadNextLevel()
+    {
+        SceneManager.LoadScene(0);
     }
 }
