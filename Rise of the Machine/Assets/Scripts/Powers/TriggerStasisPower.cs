@@ -4,10 +4,26 @@ using UnityEngine;
 
 public class TriggerStasisPower : MonoBehaviour
 {
+    public GameObject UIStasisInfo;
+
+    private void Start()
+    {
+        UIStasisInfo.SetActive(false);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
+        UIStasisInfo.SetActive(true);
         other.gameObject.GetComponent<PlayerControllerWSAD>().stasisGet = true;
-        Destroy(gameObject);
+        GetComponent<Collider>().enabled = false;
+        GetComponent<MeshRenderer>().enabled = false;
+    }
+
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            UIStasisInfo.SetActive(false);
+        }
     }
 }
