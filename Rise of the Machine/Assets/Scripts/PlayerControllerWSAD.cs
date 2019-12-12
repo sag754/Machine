@@ -24,6 +24,10 @@ public class PlayerControllerWSAD : MonoBehaviour
     public float coolDownDuration = 10;
     public float stasisDuration = 5;
     public static float gameTimeScale = 1;
+    public bool ballAudioPlay;
+    public AudioSource ballsound;
+    public float ballthreshold;
+   
 
     public GameObject sticker;
     private Vector3 collisionPoint;
@@ -32,8 +36,11 @@ public class PlayerControllerWSAD : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>(); //get the rigidbody from this playerObject
+
+        ballsound = GetComponent<AudioSource>();
     }
 
+    
     void OnCollisionEnter(Collision other)
     {
         if (other.collider != null)
@@ -146,6 +153,27 @@ public class PlayerControllerWSAD : MonoBehaviour
             rb.velocity = rb.velocity * 1.0f; //decrease velocity
         }
 
+        if (isGrounded && // if the ball detects the ground as well as
+            Mathf.Abs (rb.velocity.magnitude) > ballthreshold){ // getting absolute magnitude of the velocity 
+                if (!ballAudioPlay){
+                ballsound.Play();
+
+                ballAudioPlay = true;
+            }
+
+        }
+
+        else if (isGrounded == false) {
+                ballAudioPlay = false;
+                ballsound.Stop();
+        }
+
+        else {
+                ballAudioPlay = false;
+                ballsound.Stop();
+        }
+
+        Debug.Log (Mathf.Abs (rb.velocity.magnitude));
     }
 
     // Update is called once per frame
